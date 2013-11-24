@@ -1,0 +1,2121 @@
+<!DOCTYPE html>
+<html>
+	<head>
+        
+		<title>Top Line</title>
+		<meta charset="utf-8" />
+		<link href="kendo/styles/kendo.mobile.all.min.css" rel="stylesheet" />
+		<link href="styles/main.css" rel="stylesheet" />
+
+		<script src="cordova.js"></script>
+		<script src="kendo/js/jquery.min.js"></script>
+		<script src="kendo/js/kendo.all.min.js"></script>
+
+		<script src="scripts/topLineCamera.js" type="text/javascript"></script>
+		<script src="scripts/topLineGeolocation.js" type="text/javascript"></script>
+
+	</head>
+	<body>
+		<!-- Home-Layout -->
+		<div data-role="layout" data-id="home-layout" data-title="">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" data-rel="drawer" href="#my-drawer" data-icon="settings"  data-align="left"></a>
+					<span data-role="view-title"></span>
+				</div>
+			</header>
+			<div data-role="footer">
+				<div data-role="tabstrip">
+					<a href="#dentroFila-view" data-icon="dentroFila"></a>
+					<a href="#foraFila-view" data-icon="foraFila"></a>
+					<a href="#editorFechamento-view"  data-icon="fechamento"></a>
+					<a href="#consulta-view" data-icon="desempenho"></a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Toos-Layout -->
+		<div data-role="layout" data-id="tools-layout" data-title="">
+			<header data-role="header">
+				<div data-role="navbar">
+					<span data-role="view-title"></span>
+				</div>
+			</header>
+			<footer data-role="footer">
+				<div data-role="tabstrip">
+					<a href="#dentroFila-view" data-icon="dentroFila"></a>
+					<a href="#foraFila-view" data-icon="foraFila"></a>
+					<a href="#editorFechamento-view"  data-icon="fechamento"></a>
+					<a href="#consulta-view" data-icon="desempenho"></a>
+				</div>
+			</footer>
+		</div>
+
+		<!-- consulta-Layout -->
+		<div data-role="layout" data-id="consultas-layout" data-title="">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#:back" data-icon="reply" data-align="left"></a>
+					<span data-role="view-title"></span>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+				</div>
+			</header>
+		</div>
+
+		<!-- update-Layout -->
+		<div data-role="layout" data-id="update-layout" data-title="" data-init="selBtn">
+			<header data-role="header">
+				<div data-role="navbar">
+					<span data-role="view-title"></span>
+				</div>
+			</header>
+		</div>
+
+		<!-- Fila da Vez -->
+		<div id="dentroFila-view" data-role="view" data-layout="home-layout" data-title="TOP LINE PRO" data-before-show="showVendedoresFila" data-model="viewModel">
+			<ul data-bind="source: dsVendFila" data-role="listview" data-template="tdentroFila"></ul>
+		</div>
+
+		<!--Fora da Fila da Vez-->
+		<div id="foraFila-view" data-role="view" data-layout="home-layout" data-title="TOP LINE PRO" data-before-show="showVendedoresForaFila" data-model="viewModel">
+			<ul data-bind="source: dsVendForaFila" data-role="listview" data-template="tforaFila"></ul>
+		</div>
+
+		<!--Resultado Atendimento-->
+		<div id="resultadoAtendimento-view" data-role="view" data-title="TOP LINE PRO" data-layout="update-layout" data-model="viewModel" data-init="atendimentoViewInit">
+			<div data-role="header">
+				<div data-role="navbar">
+					<span data-role="view-title"></span>
+				</div>
+			</div>
+			<div id="formAtendimento">
+				<div id="atendimento_left">
+					<img class="foto_grande" src="styles/images/iconFoto_fila.png" data-bind="attr: { src: vendedorSelecionado.ColFotoCorpo }" alt="Foto" />
+				</div>
+				<div id="atendimento_rigth">
+					<ul>
+						<li>
+							<div class="atendimento_nome">
+								<h1 class="fila-nome" data-bind="text: vendedorSelecionado.ColNome"></h1>
+								<h2 class="fila-turno" data-bind="text: vendedorSelecionado.ColTurno"></h2>
+							</div>
+						</li>
+						<li >
+							<label>Vendeu&nbsp;&nbsp;&nbsp;&nbsp;</label>
+							<input id="chkVendeu" type="checkbox" data-role="switch" data-on-label="Sim" data-off-label="Não" data-change="switchChange" checked="Checked">
+						</li>
+						<li> &nbsp;</li>
+						<li>
+							<label>Qtde. de Peças</label>
+						</li>
+						<li>
+							<input id="RepQtde" name="RepQtde" type="number" placeholder="Qtde." max="9999" min="1" step="1" data-bind="qtde: atendimento.RepQtde" required />
+						</li>
+						<li> &nbsp;</li>
+						<li>
+							<label>Valor da Venda</label>
+						</li>
+						<li>
+							<input id="RepValor" name="RepValor" type="number" placeholder="Valor" max="9999999" min="0.01" step="0.01" data-bind="valor: atendimento.RepValor" required  />
+						</li>
+						<li> &nbsp;</li>
+
+						<li>
+							<a id="salvar" data-role="button">Salvar</a>
+						</li>
+						<li> &nbsp;</li>
+						<li>
+							<a id="cancelar" data-role="button">Cancelar</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<!--Saida da Fila da Vez-->
+		<div id="sairdaFila_View" data-role="view" data-title="TOP LINE PRO" data-layout="update-layout" data-model="viewModel" data-before-show="sairFilaViewShow" data-init="sairFilaViewInit">
+			<div>
+				<ul>
+					<li class="atendimento_nome">
+						<h1 class="fila-nome" data-bind="text: vendedorSelecionado.ColNome"></h1>
+						<h2 class="fila-turno" data-bind="text: vendedorSelecionado.ColTurno"></h2>
+						<div>&nbsp;</div>
+					</li>
+					<li>&nbsp;</li>
+					<li>
+						<label style="font-size: 16px;font-weight: bold;">Motivo Saída</label>
+					</li>
+					<li>
+						<select id="MotivosSaida" name="MotivoSaida" data-bind="source: motivos, value: motivo" data-text-field="TmoDescricao" data-value-field="TmoId" style="width: 90%; text-align: center;"></select>
+					</li>
+				</ul>
+			</div>
+			<div style="padding-top: 5px;"></div>
+			<div class="centro">
+				<ul>
+					<li>
+						<a id="salvarSaida" data-role="button">Salvar</a>
+					</li>
+					<li>&nbsp;</li>
+					<li>
+						<a id="cancelarSaida" data-role="button">Cancelar</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<!--Entrada na Fila da Vez-->
+		<div id="entrarNaFila_View" data-role="view" data-title="TOP LINE PRO" data-layout="update-layout" data-model="viewModel" data-before-show="entrarFilaViewShow" data-init="entrarFilaViewInit">
+			<div>
+				<ul>
+					<li class="atendimento_nome">
+						<h1 class="fila-nome" data-bind="text: vendedorSelecionado.ColNome"></h1>
+						<h2 class="fila-turno" data-bind="text: vendedorSelecionado.ColTurno"></h2>
+						<div>&nbsp;</div>
+					</li>
+					<li>&nbsp;</li>
+					<li>
+						<label style="font-size: 16px;font-weight: bold;">Motivo Entrada</label>
+					</li>
+					<li>
+						<select id="MotivosEntrada" name="MotivoEntrada" data-bind="source: motivos, value: motivo" data-text-field="TmoDescricao" data-value-field="TmoId" style="width: 90%; text-align: center;"></select>
+					</li>
+				</ul>
+			</div>
+			<div style="padding-top: 5px;"></div>
+			<div id="editorClientesContactados" style="display: none;">
+				<ul id="formEntrarFila" data-role="listview" data-type="group">
+					<li>
+						<ul>
+							<li class="subTitulo" style="padding:5px;margin:0;">
+								<a class="subTitulo">Novo Contato</a>
+								<a id="novoContato" data-role="detailbutton" class="subTitulo" data-style="rowinsert"></a>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<ul id="editorClientesContactadosLista" data-bind="source: frequenciaContato" data-role="listview" data-template="tAtuTiposContato"></ul>
+					</li>
+				</ul>
+			</div>
+			<div style="padding-top: 5px;"></div>
+			<div class="center">
+				<ul>
+					<li>
+						<a id="salvarEntrada" data-role="button">Salvar</a>
+					</li>
+					<li>&nbsp;</li>
+					<li>
+						<a id="cancelarEntrada" data-role="button">Cancelar</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<!--Motivos não venda View-->
+		<div id="MotNaoVenda-view" data-role="view" data-title="TOP LINE PRO" data-layout="update-layout" data-model="viewModelNaoVenda" data-before-show="naoVendaViewShow" data-init="naoVendaViewInit">
+			<div id="formMotivosNaoVenda">
+				<div>
+					<ul>
+						<li class="atendimento_nome">
+							<h1 class="fila-nome" data-bind="text: vendedorSelecionado.ColNome"></h1>
+							<h2 class="fila-turno" data-bind="text: vendedorSelecionado.ColTurno"></h2>
+							<div>&nbsp;</div>
+						</li>
+						<li>&nbsp;</li>
+						<li>
+							<label style="font-size: 16px;font-weight: bold;">Motivo Não Venda</label>
+						</li>
+						<li>
+							<select id="Motivo" name="Motivo" data-bind="source: motivos, value: motivo" data-text-field="MnvDescricao" data-value-field="MnvId" style="width: 90%; text-align: center;"></select>
+						</li>
+					</ul>
+				</div>
+				<div style="padding-top: 5px;"></div>
+				<div class="center">
+					<ul>
+						<li>
+							<a id="salvarNaoVenda" data-role="button">Salvar</a>
+						</li>
+						<li>&nbsp;</li>
+						<li>
+							<a id="cancelarNaoVenda" data-role="button">Cancelar</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<!-- Consulta -->
+		<div id="consulta-view" data-role="view" data-layout="home-layout" data-title="TOP LINE PRO">
+			<div class="configTitulo">DESEMPENHO</div>
+			<ul data-role="listview" data-click="menuConsulta">
+				<li id="#desempenho-lojaview">
+					<img class="imgMenuConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuPrincipal">Loja</div>
+				</li>
+				<li id="#turnosLoja-view">
+					<img class="imgMenuConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuPrincipal">Turno</div>
+				</li>
+				<li id="#vendedoresLoja-view">
+					<img class="imgMenuConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuPrincipal">Vendedor</div>
+				</li>
+			</ul>
+		</div>
+
+		<!-- DESEMPENHO - LOJA -->
+		<div id="desempenho-lojaview" data-role="view" data-layout="home-layout" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="reply" data-align="left"></a>
+					<span data-role="view-title"></span>
+				</div>
+			</header>
+			<div class="configTitulo">DESEMPENHO - LOJA</div>
+			<ul data-role="listview" data-click="menuConsulta">
+				<li id="#produtividade-lojaview">
+					<img class="imgMenuConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menu">Produtividade</div>
+				</li>
+				<li id="#metas-lojaview">
+					<img class="imgMenuConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menu">Metas</div>
+				</li>
+			</ul>
+		</div>
+
+		<!-- Produtividade - LOJA-->
+		<div id="produtividade-lojaview" data-role="view" data-layout="home-layout" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#desempenho-lojaview" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+					<span data-role="view-title"></span>
+				</div>
+			</header>
+			<div class="configTitulo">PRODUTIVIDADE - LOJA</div>
+			<ul data-role="listview" data-click="menuConsulta">
+				<li id="#desRealizadoLoja-view">
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Vendas</div>
+					<div class="subMenuConsulta">Hoje, acumuladas e no período</div>
+				</li>
+				<li id="#desProdutividadeVendasPerdidasLoja-view">
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Vendas Perdidas</div>
+					<div class="subMenuConsulta">Por motivo</div>
+				</li>
+				<li>
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Indicadores de Desempenho</div>
+					<div class="subMenuConsulta">Comparados: Previsto x Realizado</div>
+				</li>
+				<li>
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Clientes Contactados</div>
+					<div class="subMenuConsulta">Por dia e acumulado</div>
+				</li>
+				<li>
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Campeões de Trabalho</div>
+					<div class="subMenuConsulta">Com clientes (CRM)</div>
+				</li>
+				<li id="#desProdutividadeAfastamentoLoja-view">
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Afastamento</div>
+					<div class="subMenuConsulta">Salão de Vendas por motivo</div>
+				</li>
+			</ul>
+		</div>
+
+		<!-- Metas - LOJA-->
+		<div id="metas-lojaview" data-role="view" data-layout="home-layout" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#desempenho-lojaview" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+					<span data-role="view-title"></span>
+				</div>
+			</header>
+			<div class="configTitulo">METAS - LOJA</div>
+			<ul data-role="listview" data-click="menuConsulta">
+				<li>
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Vendas Acumuladas</div>
+					<div class="subMenuConsulta">Realizadas x Projetadas para o final do período</div>
+				</li>
+				<li>
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Metas</div>
+					<div class="subMenuConsulta">Hoje</div>
+				</li>
+				<li id="#desMetasDiariasLoja-view">
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Metas Diárias</div>
+					<div class="subMenuConsulta">Previstas x Realizadas com % de atingimento</div>
+				</li>
+			</ul>
+		</div>
+
+		<!--TURNOS da LOJA -->
+		<div id="turnosLoja-view" data-role="view" data-layout="home-layout" data-title="TOP LINE PRO" data-model="viewModel" data-before-show="showTurnosLoja">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="reply" data-align="left"></a>
+					<span data-role="view-title"></span>
+				</div>
+			</header>
+			<div class="configTitulo">TURNOS DA LOJA</div>
+			<ul data-bind="source: dsTurnosLoja" data-role="listview" data-auto-bind="false" data-template="tTurnosLoja"></ul>
+		</div>
+
+		<!-- DESEMPENHO - Turno -->
+		<div id="desempenho-turnoView" data-role="view" data-layout="home-layout" data-model="viewModel" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#turnosLoja-view" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+					<span data-role="view-title"></span>
+				</div>
+			</header>
+			<div class="configTitulo">
+				DESEMPENHO&nbsp;-&nbsp;<span data-bind="text: turnoSelecionado.TufDescricao"></span>
+			</div>
+			<ul data-role="listview" data-click="menuConsulta">
+				<li id="#produtividade-TurnoView">
+					<img class="imgMenuConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menu">Produtividade</div>
+				</li>
+				<li id="#metas-TurnoView">
+					<img class="imgMenuConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menu">Metas</div>
+				</li>
+			</ul>
+		</div>
+
+		<!-- PRODUTIVIDADE - Turno -->
+		<div id="produtividade-TurnoView" data-role="view" data-layout="home-layout" data-model="viewModel" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#turnosLoja-view" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+					<span data-role="view-title"></span>
+				</div>
+			</header>
+			<div class="configTitulo">
+				PRODUTIVIDADE&nbsp;-&nbsp;<span data-bind="text: turnoSelecionado.TufDescricao"></span>
+			</div>
+			<ul data-role="listview" data-click="menuConsulta" >
+				<li id="#desRealizadoTurno-view">
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Vendas</div>
+					<div class="subMenuConsulta">Hoje, acumuladas e no período</div>
+				</li>
+				<li id="#desProdutividadeVendasPerdidasTurno-view">
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Vendas Perdidas</div>
+					<div class="subMenuConsulta">Por motivo</div>
+				</li>
+				<li>
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Indicadores de Desempenho</div>
+					<div class="subMenuConsulta">Comparados: Previsto x Realizado</div>
+				</li>
+				<li>
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Clientes Contactados</div>
+					<div class="subMenuConsulta">Por dia e acumulado</div>
+				</li>
+				<li>
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Campeões de Trabalho</div>
+					<div class="subMenuConsulta">Com clientes (CRM)</div>
+				</li>
+				<li id="#desProdutividadeAfastamentoTurno-view">
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Afastamento</div>
+					<div class="subMenuConsulta">Salão de Vendas por motivo</div>
+				</li>
+			</ul>
+		</div>
+
+		<!-- METAS - Turno -->
+		<div id="metas-TurnoView" data-role="view" data-layout="home-layout" data-model="viewModel" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#turnosLoja-view" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+					<span data-role="view-title"></span>
+				</div>
+			</header>
+			<div class="configTitulo">
+				METAS&nbsp;-&nbsp;<span data-bind="text: turnoSelecionado.TufDescricao"></span>
+			</div>
+			<ul data-role="listview" data-click="menuConsulta" >
+				<li>
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta" >Vendas Acumuladas</div>
+					<div class="subMenuConsulta">Realizadas x Projetadas para o final do período</div>
+				</li>
+				<li>
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Metas</div>
+					<div class="subMenuConsulta">Hoje</div>
+				</li>
+				<li id="#desMetasDiariasTurno-view">
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Metas Diárias</div>
+					<div class="subMenuConsulta">Previstas x Realizadas com % de atingimento</div>
+				</li>
+			</ul>
+		</div>
+
+		<!--Vendedores da Loja -->
+		<div id="vendedoresLoja-view" data-role="view" data-layout="home-layout" data-title="TOP LINE PRO" data-model="viewModel" data-before-show="showColaboradores">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="reply" data-align="left"></a>
+					<span data-role="view-title"></span>
+				</div>
+			</header>
+			<div class="configTitulo">VENDEDORES DA LOJA</div>
+			<ul data-bind="source: dsColaborador" data-role="listview" data-auto-bind="false" data-template="tColaboradorLoja"></ul>
+		</div>
+
+		<!-- DESEMPENHO - Vendedor -->
+		<div id="desempenho-colaboradorView" data-role="view" data-layout="home-layout" data-model="viewModel" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#vendedoresLoja-view" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+					<span data-role="view-title"></span>
+				</div>
+			</header>
+			<div class="configTitulo">
+				DESEMPENHO&nbsp;-&nbsp;<span data-bind="text: colaboradorSelecionado.ColNome"></span>
+			</div>
+			<ul data-role="listview" data-click="menuConsulta">
+				<li id="#produtividade-ColaboradorView">
+					<img class="imgMenuConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menu" >Produtividade</div>
+				</li>
+				<li id="#metas-ColaboradorView">
+					<img class="imgMenuConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menu" >Metas</div>
+				</li>
+			</ul>
+		</div>
+
+		<!-- PRODUTIVIDADE - Vendedor -->
+		<div id="produtividade-ColaboradorView" data-role="view" data-layout="home-layout" data-model="viewModel" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#vendedoresLoja-view" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+					<span data-role="view-title"></span>
+				</div>
+			</header>
+			<div class="configTitulo">
+				PRODUTIVIDADE&nbsp;-&nbsp;<span data-bind="text: colaboradorSelecionado.ColNome"></span>
+			</div>
+			<ul data-role="listview" data-click="menuConsulta">
+				<li id="#desRealizadoCol-view">
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Vendas</div>
+					<div class="subMenuConsulta">Hoje, acumuladas e no período</div>
+				</li>
+				<li id="#desProdutividadeVendasPerdidasCol-view">
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Vendas Perdidas</div>
+					<div class="subMenuConsulta">Por motivo</div>
+				</li>
+				<li>
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Indicadores de Desempenho</div>
+					<div class="subMenuConsulta">Comparados: Previsto x Realizado</div>
+				</li>
+				<li>
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Indicadores de Desempenho</div>
+					<div class="subMenuConsulta">Posição no ranking no período</div>
+				</li>
+				<li>
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Clientes Contactados</div>
+					<div class="subMenuConsulta">Por dia e acumulado</div>
+				</li>
+				<li>
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Campeões de Trabalho</div>
+					<div class="subMenuConsulta">Com clientes (CRM)</div>
+				</li>
+				<li id="#desProdutividadeAfastamentoCol-view">
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Afastamento</div>
+					<div class="subMenuConsulta">Salão de Vendas por motivo</div>
+				</li>
+			</ul>
+		</div>
+
+		<!-- METAS - Vendedor -->
+		<div id="metas-ColaboradorView" data-role="view" data-layout="home-layout" data-model="viewModel" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#vendedoresLoja-view" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+					<span data-role="view-title"></span>
+				</div>
+			</header>
+			<div class="configTitulo">
+				METAS&nbsp;-&nbsp;<span data-bind="text: colaboradorSelecionado.ColNome"></span>
+			</div>
+			<ul data-role="listview" data-click="menuConsulta">
+				<li>
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Vendas Acumuladas</div>
+					<div class="subMenuConsulta">Realizadas x Projetadas para o final do período</div>
+				</li>
+				<li>
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Metas</div>
+					<div class="subMenuConsulta">Hoje</div>
+				</li>
+				<li id="#desMetasDiariasCol-view">
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Metas Diárias</div>
+					<div class="subMenuConsulta">Previstas x Realizadas com % de atingimento</div>
+				</li>
+				<li>
+					<img class="imgMenuDuploConsulta" src="styles/images/seta_pequena.png" alt="" />
+					<div class="menuConsulta">Posição no Ranking</div>
+					<div class="subMenuConsulta">Atingimento das Metas</div>
+				</li>
+			</ul>
+		</div>
+
+		<!-- Minhas vendas - Realizado - Loja -->
+		<div id="desRealizadoLoja-view" data-role="view" data-model="viewModelConsultas" data-before-show="desRealizadoLojaShow" data-layout="consultas-layout" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#produtividade-lojaview" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+					<span data-role="view-title"></span>
+				</div>
+				<div class="configTitulo">
+					<span data-bind="text: lojaSelecionada.LojNomefantasia"></span>
+					<span data-bind="cabecalho: dataAtual" data-dateformat="dd/MM/yyyy"></span>
+				</div>
+				<ul class="tableConsultaHeader">
+					<li style="width:20%">Hora</li>
+					<li style="width:30%">Valor(R$)</li>
+					<li style="width:30%">Acum(R$)</li>
+					<li style="width:20%">Peças</li>
+				</ul>
+			</header>
+			<div class="tableConsulta">
+				<ul data-bind="source: resultado" data-role="listview" data-template="tDesRealizadoCol"></ul>
+			</div>
+			<div data-role="footer">
+				<div data-role="tabstrip">
+					<a href="#desRealizadoLoja-view" data-icon="tabela"></a>
+					<a href="#grafDesRealizadoLoja-view" data-icon="grafico"></a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Grafico Minhas vendas - Realizado - Loja -->
+		<div id="grafDesRealizadoLoja-view" data-role="view" data-model="viewModelConsultas" data-before-show="GrafDesRealizadoLojaShow" data-layout="consultas-layout" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#produtividade-lojaview" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+					<span data-role="view-title"></span>
+				</div>
+			</header>
+			<div class="chart-wrapper">
+				<div id="chtGrafDesRealizadoVendaLoja"></div>
+			</div>
+			<div data-role="footer">
+				<div data-role="tabstrip">
+					<a href="#desRealizadoLoja-view" data-icon="tabela"></a>
+					<a href="#grafDesRealizadoLoja-view" data-icon="grafico"></a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Minhas vendas - Realizado - Colaborador -->
+		<div id="desRealizadoCol-view" data-role="view" data-model="viewModelConsultas" data-before-show="desRealizadoColShow" data-layout="consultas-layout" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#produtividade-ColaboradorView" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+					<span data-role="view-title"></span>
+				</div>
+				<div class="configTitulo">
+					<span data-bind="text: lojaSelecionada.LojNomefantasia"></span> - <span data-bind="text: colaboradorSelecionado.ColApelido"></span><br>
+					<span data-bind="cabecalho: dataAtual" data-dateformat="dd/MM/yyyy"></span>
+				</div>
+				<ul class="tableConsultaHeader">
+					<li style="width:20%">Hora</li>
+					<li style="width:30%">Valor(R$)</li>
+					<li style="width:30%">Acum(R$)</li>
+					<li style="width:20%">Peças</li>
+				</ul>
+			</header>
+			<div class="tableConsulta">
+				<ul data-bind="source: resultado" data-role="listview" data-template="tDesRealizadoCol"></ul>
+			</div>
+			<div data-role="footer">
+				<div data-role="tabstrip">
+					<a href="#desRealizadoCol-view" data-icon="tabela"></a>
+					<a href="#grafDesRealizadoCol-view" data-icon="grafico"></a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Grafico Minhas vendas - Realizado - Colaborador -->
+		<div id="grafDesRealizadoCol-view" data-role="view" data-model="viewModelConsultas" data-before-show="GrafDesRealizadoColShow" data-layout="consultas-layout" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<span data-role="view-title"></span>
+					<a class="btn" data-role="button" href="#produtividade-ColaboradorView" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+				</div>
+			</header>
+			<div class="chart-wrapper">
+				<div id="chtGrafDesRealizadoVendaCol"></div>
+			</div>
+			<div data-role="footer">
+				<div data-role="tabstrip">
+					<a href="#desRealizadoCol-view" data-icon="tabela"></a>
+					<a href="#grafDesRealizadoCol-view" data-icon="grafico"></a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Minhas vendas - Realizado - Turno -->
+		<div id="desRealizadoTurno-view" data-role="view" data-model="viewModelConsultas" data-before-show="desRealizadoTurnoShow" data-layout="consultas-layout" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#produtividade-TurnoView" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+					<span data-role="view-title"></span>
+				</div>
+				<div class="configTitulo">
+					<span data-bind="text: lojaSelecionada.LojNomefantasia"></span> - <span data-bind="text: turnoSelecionado.TufDescricao"></span><br>
+					<span data-bind="cabecalho: dataAtual" data-dateformat="dd/MM/yyyy"></span>
+				</div>
+				<ul class="tableConsultaHeader">
+					<li style="width:20%">Hora</li>
+					<li style="width:30%">Valor(R$)</li>
+					<li style="width:30%">Acum(R$)</li>
+					<li style="width:20%">Peças</li>
+				</ul>
+			</header>
+			<div class="tableConsulta">
+				<ul data-bind="source: resultado" data-role="listview" data-template="tDesRealizadoCol"></ul>
+			</div>
+			<div data-role="footer">
+				<div data-role="tabstrip">
+					<a href="#desRealizadoTurno-view" data-icon="tabela"></a>
+					<a href="#grafDesRealizadoTurno-view" data-icon="grafico"></a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Grafico Minhas vendas - Realizado - Turno -->
+		<div id="grafDesRealizadoTurno-view" data-role="view" data-model="viewModelConsultas" data-before-show="GrafDesRealizadoTurnoShow" data-layout="consultas-layout" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<span data-role="view-title"></span>
+					<a class="btn" data-role="button" href="#produtividade-TurnoView" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+				</div>
+			</header>
+			<div class="chart-wrapper">
+				<div id="chtGrafDesRealizadoVendaTurno"></div>
+			</div>
+			<div data-role="footer">
+				<div data-role="tabstrip">
+					<a href="#desRealizadoTurno-view" data-icon="tabela"></a>
+					<a href="#grafDesRealizadoTurno-view" data-icon="grafico"></a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Vendas Perdidas - Loja -->
+		<div id="desProdutividadeVendasPerdidasLoja-view" data-role="view" data-model="viewModelConsultas" data-before-show="desProdutividadeVendasPerdidasLojaShow" data-layout="consultas-layout" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#produtividade-lojaview" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+					<span data-role="view-title"></span>
+				</div>
+				<div class="configTitulo">
+					<span data-bind="text: lojaSelecionada.LojNomefantasia"></span>
+					<span data-bind="cabecalho: dataAtual" data-dateformat="dd/MM/yyyy"></span>
+				</div>
+				<ul class="tableConsultaHeader">
+					<li style="width:60%">Motivo</li>
+					<li style="width:15%">Qtde</li>
+					<li style="width:25%">% Perdidas</li>
+				</ul>
+			</header>
+			<div class="tableConsulta">
+				<ul data-bind="source: resultProdutividadeVendasPerdidas" data-role="listview" data-template="tProdutividadePadrao"></ul>
+			</div>
+			<div data-role="footer">
+				<div data-role="tabstrip">
+					<a href="#desDesProdutividadeVendasPerdidasLoja-view" data-icon="tabela"></a>
+					<a href="#grafDesProdutividadeVendasPerdidasLoja-view" data-icon="grafico"></a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Grafico Vendas Perdidas - Loja -->
+		<div id="grafDesProdutividadeVendasPerdidasLoja-view" data-role="view" data-model="viewModelConsultas" data-before-show="GrafDesProdutividadeVendasPerdidasLojaShow" data-layout="consultas-layout" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#produtividade-lojaview" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+					<span data-role="view-title"></span>
+				</div>
+			</header>
+			<div class="chart-wrapper">
+				<div id="chtGrafDesProdutividadeVendasPerdidasLoja"></div>
+			</div>
+			<div data-role="footer">
+				<div data-role="tabstrip">
+					<a href="#desProdutividadeVendasPerdidasLoja-view" data-icon="tabela"></a>
+					<a href="#grafDesProdutividadeVendasPerdidasLoja-view" data-icon="grafico"></a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Vendas Perdidas - Colaborador -->
+		<div id="desProdutividadeVendasPerdidasCol-view" data-role="view" data-model="viewModelConsultas" data-before-show="desProdutividadeVendasPerdidasColShow" data-layout="consultas-layout" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#produtividade-ColaboradorView" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+					<span data-role="view-title"></span>
+				</div>
+				<div class="configTitulo">
+					<span data-bind="text: lojaSelecionada.LojNomefantasia"></span> - <span data-bind="text: colaboradorSelecionado.ColApelido"></span><br>
+					<span data-bind="cabecalho: dataAtual" data-dateformat="dd/MM/yyyy"></span>
+				</div>
+				<ul class="tableConsultaHeader">
+					<li style="width:60%">Motivo</li>
+					<li style="width:15%">Qtde</li>
+					<li style="width:25%">% Perdidas</li>
+				</ul>
+			</header>
+			<div class="tableConsulta">
+				<ul data-bind="source: resultProdutividadeVendasPerdidas" data-role="listview" data-template="tProdutividadePadrao"></ul>
+			</div>
+			<div data-role="footer">
+				<div data-role="tabstrip">
+					<a href="#desProdutividadeVendasPerdidasCol-view" data-icon="tabela"></a>
+					<a href="#grafDesProdutividadeVendasPerdidasCol-view" data-icon="grafico"></a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Grafico Vendas perdidas - Colaborador -->
+		<div id="grafDesProdutividadeVendasPerdidasCol-view" data-role="view" data-model="viewModelConsultas" data-before-show="GrafDesProdutividadeVendasPerdidasColShow" data-layout="consultas-layout" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<span data-role="view-title"></span>
+					<a class="btn" data-role="button" href="#produtividade-ColaboradorView" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+				</div>
+			</header>
+			<div class="chart-wrapper">
+				<div id="chtGrafDesProdutividadeVendasPerdidasCol"></div>
+			</div>
+			<div data-role="footer">
+				<div data-role="tabstrip">
+					<a href="#desProdutividadeVendasPerdidasCol-view" data-icon="tabela"></a>
+					<a href="#grafDesProdutividadeVendasPerdidasCol-view" data-icon="grafico"></a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Vendas Perdidas - Turno -->
+		<div id="desProdutividadeVendasPerdidasTurno-view" data-role="view" data-model="viewModelConsultas" data-before-show="desProdutividadeVendasPerdidasTurnoShow" data-layout="consultas-layout" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#produtividade-TurnoView" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+					<span data-role="view-title"></span>
+				</div>
+				<div class="configTitulo">
+					<span data-bind="text: lojaSelecionada.LojNomefantasia"></span> - <span data-bind="text: turnoSelecionado.TufDescricao"></span><br>
+					<span data-bind="cabecalho: dataAtual" data-dateformat="dd/MM/yyyy"></span>
+				</div>
+				<ul class="tableConsultaHeader">
+					<li style="width:60%">Motivo</li>
+					<li style="width:15%">Qtde</li>
+					<li style="width:25%">% Perdidas</li>
+				</ul>
+			</header>
+			<div class="tableConsulta">
+				<ul data-bind="source: resultProdutividadeVendasPerdidas" data-role="listview" data-template="tProdutividadePadrao"></ul>
+			</div>
+			<div data-role="footer">
+				<div data-role="tabstrip">
+					<a href="#desProdutividadeVendasPerdidasTurno-view" data-icon="tabela"></a>
+					<a href="#grafDesProdutividadeVendasPerdidasTurno-view" data-icon="grafico"></a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Grafico Vendas perdidas - Turno -->
+		<div id="grafDesProdutividadeVendasPerdidasTurno-view" data-role="view" data-model="viewModelConsultas" data-before-show="GrafDesProdutividadeVendasPerdidasTurnoShow" data-layout="consultas-layout" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<span data-role="view-title"></span>
+					<a class="btn" data-role="button" href="#produtividade-TurnoView" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+				</div>
+			</header>
+			<div class="chart-wrapper">
+				<div id="chtGrafDesProdutividadeVendasPerdidasTurno"></div>
+			</div>
+			<div data-role="footer">
+				<div data-role="tabstrip">
+					<a href="#desProdutividadeVendasPerdidasTurno-view" data-icon="tabela"></a>
+					<a href="#grafDesProdutividadeVendasPerdidasTurno-view" data-icon="grafico"></a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Afastamento Salao de Vendas - Loja -->
+		<div id="desProdutividadeAfastamentoLoja-view" data-role="view" data-model="viewModelConsultas" data-before-show="desProdutividadeAfastamentoLojaShow" data-layout="consultas-layout" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#produtividade-lojaview" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+					<span data-role="view-title"></span>
+				</div>
+				<div class="configTitulo">
+					<span data-bind="text: lojaSelecionada.LojNomefantasia"></span>
+					<span data-bind="cabecalho: dataAtual" data-dateformat="dd/MM/yyyy"></span>
+				</div>
+				<ul class="tableConsultaHeader">
+					<li style="width:60%">Motivo</li>
+					<li style="width:15%">Qtde</li>
+					<li style="width:25%">% Perdidas</li>
+				</ul>
+			</header>
+			<div class="tableConsulta">
+				<ul data-bind="source: resultProdutividadeAfastamento" data-role="listview" data-template="tProdutividadePadrao"></ul>
+			</div>
+			<div data-role="footer">
+				<div data-role="tabstrip">
+					<a href="#desDesProdutividadeAfastamentoLoja-view" data-icon="tabela"></a>
+					<a href="#grafDesProdutividadeAfastamentoLoja-view" data-icon="grafico"></a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Grafico Afastamento Salao de Vendas - Loja -->
+		<div id="grafDesProdutividadeAfastamentoLoja-view" data-role="view" data-model="viewModelConsultas" data-before-show="GrafDesProdutividadeAfastamentoLojaShow" data-layout="consultas-layout" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#produtividade-lojaview" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+					<span data-role="view-title"></span>
+				</div>
+			</header>
+			<div class="chart-wrapper">
+				<div id="chtGrafDesProdutividadeAfastamentoLoja"></div>
+			</div>
+			<div data-role="footer">
+				<div data-role="tabstrip">
+					<a href="#desProdutividadeAfastamentoLoja-view" data-icon="tabela"></a>
+					<a href="#grafDesProdutividadeAfastamentoLoja-view" data-icon="grafico"></a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Afastamento Salao de Vendas - Colaborador -->
+		<div id="desProdutividadeAfastamentoCol-view" data-role="view" data-model="viewModelConsultas" data-before-show="desProdutividadeAfastamentoColShow" data-layout="consultas-layout" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#produtividade-ColaboradorView" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+					<span data-role="view-title"></span>
+				</div>
+				<div class="configTitulo">
+					<span data-bind="text: lojaSelecionada.LojNomefantasia"></span> - <span data-bind="text: colaboradorSelecionado.ColApelido"></span><br>
+					<span data-bind="cabecalho: dataAtual" data-dateformat="dd/MM/yyyy"></span>
+				</div>
+				<ul class="tableConsultaHeader">
+					<li style="width:60%">Motivo</li>
+					<li style="width:15%">Qtde</li>
+					<li style="width:25%">% Perdidas</li>
+				</ul>
+			</header>
+			<div class="tableConsulta">
+				<ul data-bind="source: resultProdutividadeAfastamento" data-role="listview" data-template="tProdutividadePadrao"></ul>
+			</div>
+			<div data-role="footer">
+				<div data-role="tabstrip">
+					<a href="#desProdutividadeAfastamentoCol-view" data-icon="tabela"></a>
+					<a href="#grafDesProdutividadeAfastamentoCol-view" data-icon="grafico"></a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Grafico Afastamento Salao de Vendas - Colaborador -->
+		<div id="grafDesProdutividadeAfastamentoCol-view" data-role="view" data-model="viewModelConsultas" data-before-show="GrafDesProdutividadeAfastamentoColShow" data-layout="consultas-layout" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<span data-role="view-title"></span>
+					<a class="btn" data-role="button" href="#produtividade-ColaboradorView" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+				</div>
+			</header>
+			<div class="chart-wrapper">
+				<div id="chtGrafDesProdutividadeAfastamentoCol"></div>
+			</div>
+			<div data-role="footer">
+				<div data-role="tabstrip">
+					<a href="#desProdutividadeAfastamentoCol-view" data-icon="tabela"></a>
+					<a href="#grafDesProdutividadeAfastamentoCol-view" data-icon="grafico"></a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Afastamento Salao de Vendas - Turno -->
+		<div id="desProdutividadeAfastamentoTurno-view" data-role="view" data-model="viewModelConsultas" data-before-show="desProdutividadeAfastamentoTurnoShow" data-layout="consultas-layout" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#produtividade-TurnoView" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+					<span data-role="view-title"></span>
+				</div>
+				<div class="configTitulo">
+					<span data-bind="text: lojaSelecionada.LojNomefantasia"></span> - <span data-bind="text: turnoSelecionado.TufDescricao"></span><br>
+					<span data-bind="cabecalho: dataAtual" data-dateformat="dd/MM/yyyy"></span>
+				</div>
+				<ul class="tableConsultaHeader">
+					<li style="width:60%">Motivo</li>
+					<li style="width:15%">Qtde</li>
+					<li style="width:25%">% Perdidas</li>
+				</ul>
+			</header>
+			<div class="tableConsulta">
+				<ul data-bind="source: resultProdutividadeAfastamento" data-role="listview" data-template="tProdutividadePadrao"></ul>
+			</div>
+			<div data-role="footer">
+				<div data-role="tabstrip">
+					<a href="#desProdutividadeAfastamentoTurno-view" data-icon="tabela"></a>
+					<a href="#grafDesProdutividadeAfastamentoTurno-view" data-icon="grafico"></a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Grafico Afastamento Salao de Vendas - Turno -->
+		<div id="grafDesProdutividadeAfastamentoTurno-view" data-role="view" data-model="viewModelConsultas" data-before-show="GrafDesProdutividadeAfastamentoTurnoShow" data-layout="consultas-layout" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<span data-role="view-title"></span>
+					<a class="btn" data-role="button" href="#produtividade-TurnoView" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+				</div>
+			</header>
+			<div class="chart-wrapper">
+				<div id="chtGrafDesProdutividadeAfastamentoTurno"></div>
+			</div>
+			<div data-role="footer">
+				<div data-role="tabstrip">
+					<a href="#desProdutividadeAfastamentoTurno-view" data-icon="tabela"></a>
+					<a href="#grafDesProdutividadeAfastamentoTurno-view" data-icon="grafico"></a>
+				</div>
+			</div>
+		</div>
+
+		<!--Metas Diarias - Rafael-->
+
+		<!-- Metas Diarias - Loja -->
+		<div id="desMetasDiariasLoja-view" data-role="view" data-model="viewModelConsultas" data-before-show="metasDiariasLojaShow" data-layout="consultas-layout" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#metas-lojaview" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+					<span data-role="view-title"></span>
+				</div>
+				<div class="configTitulo">
+					<span data-bind="text: lojaSelecionada.LojNomefantasia"></span>
+					<span data-bind="cabecalhoMetas: dataAtual" data-dateformat="dd/MM/yyyy"></span>
+				</div>
+				<ul class="tableConsultaHeader">
+					<li style="width:20%">Dia</li>
+					<li style="width:25%">Previsto</li>
+					<li style="width:25%">Realizado</li>
+					<li style="width:30%">% Atingimento</li>
+				</ul>
+			</header>
+			<div class="tableConsulta">
+				<ul data-bind="source: resultMetasDiarias" data-role="listview" data-template="tMetasDiariasPadrao"></ul>
+			</div>
+			<div data-role="footer">
+				<div data-role="tabstrip">
+					<a href="#desDesMetasDiariasLoja-view" data-icon="tabela"></a>
+					<a href="#grafMetasDiariasLoja-view" data-icon="grafico"></a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Grafico Metas Diarias - Loja -->
+		<div id="grafMetasDiariasLoja-view" data-role="view" data-model="viewModelConsultas" data-before-show="GrafMetasDiariasLojaShow" data-layout="consultas-layout" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#metas-lojaview" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+					<span data-role="view-title"></span>
+				</div>
+			</header>
+			<div class="chart-wrapper">
+				<div id="chtGrafMetasDiariasLoja"></div>
+			</div>
+			<div data-role="footer">
+				<div data-role="tabstrip">
+					<a href="#desMetasDiariasLoja-view" data-icon="tabela"></a>
+					<a href="#grafMetasDiariasLoja-view" data-icon="grafico"></a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Metas Diarias - Colaborador -->
+		<div id="desMetasDiariasCol-view" data-role="view" data-model="viewModelConsultas" data-before-show="metasDiariasColShow" data-layout="consultas-layout" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#metas-ColaboradorView" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+					<span data-role="view-title"></span>
+				</div>
+				<div class="configTitulo">
+					<span data-bind="text: lojaSelecionada.LojNomefantasia"></span> - <span data-bind="text: colaboradorSelecionado.ColApelido"></span><br>
+					<span data-bind="cabecalhoMetas: dataAtual" data-dateformat="dd/MM/yyyy"></span>
+				</div>
+				<ul class="tableConsultaHeader">
+					<li style="width:20%">Dia</li>
+					<li style="width:25%">Previsto</li>
+					<li style="width:25%">Realizado</li>
+					<li style="width:30%">% Atingimento</li>
+				</ul>
+			</header>
+			<div class="tableConsulta">
+				<ul data-bind="source: resultMetasDiarias" data-role="listview" data-template="tMetasDiariasPadrao"></ul>
+			</div>
+			<div data-role="footer">
+				<div data-role="tabstrip">
+					<a href="#desMetasDiariasCol-view" data-icon="tabela"></a>
+					<a href="#grafMetasDiariasCol-view" data-icon="grafico"></a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Grafico Metas Diarias - Colaborador -->
+		<div id="grafMetasDiariasCol-view" data-role="view" data-model="viewModelConsultas" data-before-show="GrafMetasDiariasColShow" data-layout="consultas-layout" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<span data-role="view-title"></span>
+					<a class="btn" data-role="button" href="#metas-ColaboradorView" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+				</div>
+			</header>
+			<div class="chart-wrapper">
+				<div id="chtGrafMetasDiariasCol"></div>
+			</div>
+			<div data-role="footer">
+				<div data-role="tabstrip">
+					<a href="#desMetasDiariasCol-view" data-icon="tabela"></a>
+					<a href="#grafMetasDiariasCol-view" data-icon="grafico"></a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Metas Diarias - Turno -->
+		<div id="desMetasDiariasTurno-view" data-role="view" data-model="viewModelConsultas" data-before-show="metasDiariasTurnoShow" data-layout="consultas-layout" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#metas-TurnoView" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+					<span data-role="view-title"></span>
+				</div>
+				<div class="configTitulo">
+					<span data-bind="text: lojaSelecionada.LojNomefantasia"></span> - <span data-bind="text: turnoSelecionado.TufDescricao"></span><br>
+					<span data-bind="cabecalhoMetas: dataAtual" data-dateformat="dd/MM/yyyy"></span>
+				</div>
+				<ul class="tableConsultaHeader">
+					<li style="width:20%">Dia</li>
+					<li style="width:25%">Previsto</li>
+					<li style="width:25%">Realizado</li>
+					<li style="width:30%">% Atingimento</li>
+				</ul>
+			</header>
+			<div class="tableConsulta">
+				<ul data-bind="source: resultMetasDiarias" data-role="listview" data-template="tMetasDiariasPadrao"></ul>
+			</div>
+			<div data-role="footer">
+				<div data-role="tabstrip">
+					<a href="#desMetasDiariasTurno-view" data-icon="tabela"></a>
+					<a href="#grafMetasDiariasTurno-view" data-icon="grafico"></a>
+				</div>
+			</div>
+		</div>
+
+		<!-- Grafico Metas Diarias - Turno -->
+		<div id="grafMetasDiariasTurno-view" data-role="view" data-model="viewModelConsultas" data-before-show="GrafMetasDiariasTurnoShow" data-layout="consultas-layout" data-title="TOP LINE PRO">
+			<header data-role="header">
+				<div data-role="navbar">
+					<span data-role="view-title"></span>
+					<a class="btn" data-role="button" href="#metas-TurnoView" data-icon="reply" data-align="left"></a>
+					<a class="btn" data-role="button" href="#consulta-view" data-icon="drawer-button" data-align="right"></a>
+				</div>
+			</header>
+			<div class="chart-wrapper">
+				<div id="chtGrafMetasDiariasTurno"></div>
+			</div>
+			<div data-role="footer">
+				<div data-role="tabstrip">
+					<a href="#desMetasDiariasTurno-view" data-icon="tabela"></a>
+					<a href="#grafMetasDiariasTurno-view" data-icon="grafico"></a>
+				</div>
+			</div>
+		</div>
+
+		<!--Metas Diarias Fim - Rafael-->
+
+		<!--Em desenvolvimento-->
+		<div data-role="view" id="desenvView" data-title="TOP LINE PRO" data-layout="home-layout" >
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btn" data-role="button" href="#:back" data-icon="reply" data-align="left"></a>
+					<span data-role="view-title"></span>
+				</div>
+			</header>
+			<div>
+				<h1>Em breve teremos novidades! Aguarde...</h1>
+			</div>
+		</div>
+
+		<!--Colaboradores View-->
+		<div data-role="view" id="colaboradores-view" data-title="TOP LINE PRO" data-model="viewModel" data-layout="update-layout" data-before-show="showColaboradores">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a data-role="button" data-rel="drawer" href="#my-drawer" data-icon="settings" data-align="left"></a>
+					<a data-role="button" data-icon="add" data-align="right" data-bind="events: {click: adicionarColaborador}"></a>
+					<span data-role="view-title"></span>
+				</div>
+			</header>
+			<ul data-bind="source: dsColaborador" data-role="listview" data-auto-bind="false" data-template="tColaborador"></ul>
+		</div>
+
+		<!--Detalhes Colaboradores view-->
+		<div id="detalhesColaborador-view" data-role="view" data-model="viewModel" data-title="TOP LINE PRO" data-layout="update-layout">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a data-role="button" data-icon="reply" data-align="left"  href="#colaboradores-view"></a>
+					<a data-role="button" data-icon="compose" data-align="right" href="#editorColaborador-view" ></a>
+					<span data-role="view-title"></span>
+				</div>
+				<div class="divTituloAtu">COLABORADOR</div>
+			</header>
+			<ul class="infoColaborador" data-role="listview" data-type="group">
+				<li>
+					<ul>
+						<li>
+							<div class="divinfoFoto">
+								<img class="fila-art" src="styles/images/iconFoto_fila.png" data-bind="attr: { src: colaboradorSelecionado.ColFoto }" alt="Foto"/>
+								<div class="divinfoFoto">
+									<h1 class="col-nome" data-bind="text: colaboradorSelecionado.ColNome"></h1>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>
+							<div class="divSubTitulo">Dados</div>
+						</li>
+						<li>
+							<label>CPF</label>
+							<span data-bind="cpf: colaboradorSelecionado.ColCpf"></span>
+						</li>
+						<li>
+							<label>Nome</label>
+							<span data-bind="text: colaboradorSelecionado.ColNome"></span>
+						</li>
+						<li>
+							<label>Sobrenome</label>
+							<span data-bind="text: colaboradorSelecionado.ColSobrenome"></span>
+						</li>
+						<li>
+							<label>Sexo</label>
+							<span data-bind="sexoText: colaboradorSelecionado.ColSexo"></span>
+						</li>
+						<li>
+							<label>Apelido</label>
+							<span data-bind="text: colaboradorSelecionado.ColApelido"></span>
+						</li>
+						<li>
+							<label>Nascimento</label>
+							<span id="dtNascimentoView" data-bind="dateText: colaboradorSelecionado.ColDtnascimento"></span>
+						</li>
+						<li>
+							<label>Email</label>
+							<span data-bind="text: colaboradorSelecionado.ColEmail"></span>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>
+							<div class="divSubTitulo">Status</div>
+						</li>
+						<li>
+							<label>
+								Entrada
+							</label>
+							<span id="dtEntradaView" data-bind="dateText: colaboradorSelecionado.ColDtentrada"></span>
+						</li>
+						<li>
+							<label>Saída</label>
+							<span id="dtSaidaView" data-bind="dateText: colaboradorSelecionado.ColDtsaida"></span>
+						</li>
+						<li>
+							<label>Afastado</label>
+							<span data-bind="afastText: colaboradorSelecionado.ColAfasttemp"></span>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>
+							<div class="divSubTitulo">Posição</div>
+						</li>
+						<li>
+							<label>Cargo</label>
+							<span data-bind="text: colaboradorSelecionado.CarDescricao"></span>
+						</li>
+
+						<li>
+							<label>Turno</label>
+							<span data-bind="text: colaboradorSelecionado.ColTurnoDesc"></span>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<div class="divSubTitulo">Telefone</div>
+				</li>
+				<li>
+					<ul class="infoColaborador" data-bind="source: dsTelColaborador" data-role="listview" data-template="tTelColaborador"></ul>
+				</li>
+			</ul>
+		</div>
+
+		<!--Editor colaboradores view-->
+		<div id="editorColaborador-view" data-role="view" data-show="editorColViewShow" data-init="editorColViewInit" data-model="viewModel" data-title="TOP LINE PRO" data-layout="update-layout">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a id="cancelColaborador" class="btnCancel" data-role="backbutton" data-icon="reply" data-align="left"></a>
+					<a id="editColaborador" class="btnCreate" data-role="button" data-icon="save-button" data-align="right"></a>
+					<span data-role="view-title"></span>
+				</div>
+			</header>
+			<ul id="editorColaborador" data-role="listview" data-type="group">
+				<li style="height: 15px;">
+					<div class="divTituloFotos">Foto de close</div>
+				</li>
+				<li style="height:70px;">
+					<input id="ImgPequena" src="styles/images/iconFoto_fila.png" data-bind="attr: { src: colaboradorSelecionado.ColFoto }" type="image" name="image" width="60" height="60" style="float:left;margin:3px 5px 0 5px;" alt="Foto" />
+					<input id="capturarFotoClose" type="image" src="styles/images/iconFoto.png" name="image" width="60" height="60" />
+					<input id="galeriaFotoClose" type="image" src="styles/images/iconGaleria.png" name="image" width="60" height="60"/>
+				</li>
+				<li style="height: 15px;">
+					<div class="divTituloFotos">Foto de corpo inteiro</div>
+				</li>
+				<li style="height:80px;">
+					<input id="ImgGrande" src="styles/images/iconFoto_fila.png" data-bind="attr: { src: colaboradorSelecionado.ColFotoCorpo }" type="image" name="image" width="50" height="70" style="float:left;margin: 3px 10px 0 10px;" alt="Foto" />
+					<input id="capturarFotoCorpo" type="image" src="styles/images/iconFoto.png" name="image" width="60" height="60" alt="Foto" />
+					<input id="galeriaFotoCorpo" type="image" src="styles/images/iconGaleria.png" name="image" width="60" height="60" alt="Imagem" />
+				</li>
+				<li>
+					<ul>
+						<li>
+							<div class="divSubTitulo">Dados</div>
+						</li>
+					</ul>
+					<ul>
+						<li>
+							<label>
+								CPF
+							</label>
+							<input id="cpf" name="Cpf" type="text" placeholder="CPF" maxlength="11" size="11" data-bind="cpf: colaboradorSelecionado.ColCpf, value: colaboradorSelecionado.ColCpf" required data-custom-msg="CPF Inválido"/>
+						</li>
+						<li>
+							<label>
+								Nome
+							</label>
+							<input id="nome" name="Nome" type="text" placeholder="Nome" data-bind="value: colaboradorSelecionado.ColNome" required />
+						</li>
+						<li>
+							<label>
+								Sobrenome
+							</label>
+							<input id="sobrenome" name="SobreNome" type="text" placeholder="Sobrenome" data-bind="value: colaboradorSelecionado.ColSobrenome" required  />
+						</li>
+						<li>
+							<label>
+								Sexo
+							</label>
+							<select id="sexoId" name="Sexo" data-bind="source: sexos, value: colaboradorSelecionado.ColSexo" data-text-field="Desc" data-value-field="Id"></select>
+						</li>
+						<li>
+							<label>
+								Apelido
+							</label>
+							<input id="apelido" name="Apelido" type="text"  placeholder="Apelido" data-bind="value: colaboradorSelecionado.ColApelido" required  />
+						</li>
+						<li>
+							<label>
+								Nascimento
+							</label>
+							<input id="dtNascimento" name="DataNascimento" type="date" data-bind="dateValue: colaboradorSelecionado.ColDtnascimento" />
+						</li>
+
+						<li>
+							<label>
+								Email
+							</label>
+							<input id="email" name="Email" type="email" placeholder="e.g. meunome@exemplo.com.br" maxlength="60" size="60" data-bind="value: colaboradorSelecionado.ColEmail" required  data-email-msg="Formato de E-mail inválido!"/>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>
+							<div class="divSubTitulo">Status</div>
+						</li>
+						<li>
+							<label>
+								Entrada
+							</label>
+							<input id="dtEntrada" name="DataEntrada" type="date" data-bind="dateValue: colaboradorSelecionado.ColDtentrada" />
+						</li>
+						<li>
+							<label>
+								Saída
+							</label>
+							<input id="dtSaida" name="DataSaida" type="date" data-bind="dateValue: colaboradorSelecionado.ColDtsaida" />
+						</li>
+						<li>
+							<label>
+								Afastado
+							</label>
+							<input id="afastamento" type="checkbox" name="Afastamento" data-role="switch" data-on-label="Sim" data-off-label="Não" data-bind="checked: colaboradorSelecionado.ColAfasttemp">
+						</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>
+							<div class="divSubTitulo">Posição</div>
+						</li>
+						<li>
+							<label>
+								Cargo
+							</label>
+							<select id="cargoId" name="Cargo" data-bind="source: cargos, value: colaboradorSelecionado.CarId" data-text-field="CarDescricao" data-value-field="CarId"></select>
+						</li>
+						<!--<li>
+						<label>
+						Turno
+						</label>
+						<select id="turnoId" name="Turno" data-bind="source: turnosLoja, value: colaboradorSelecionado.ColHfuId" data-text-field="TufDescricao" data-value-field="TufId"></select>
+						</li>-->
+					</ul>
+				</li>
+				<!--<li>
+					<ul>
+						<li>
+							<div class="divSubTitulo">Dia X Turno</div>
+						</li>						
+						<li>
+							<label>
+								Domingo
+							</label>
+							<select id="turnoId" name="Turno" data-bind="source: turnosLoja, value: colaboradorSelecionado.ColHfuId" data-text-field="TufDescricao" data-value-field="TufId"></select>
+						</li>
+						<li>
+							<label>
+								Segunda
+							</label>
+							<select id="turnoId" name="Turno" data-bind="source: turnosLoja, value: colaboradorSelecionado.ColHfuId" data-text-field="TufDescricao" data-value-field="TufId"></select>
+						</li>
+						<li>
+							<label>
+								Terça
+							</label>
+							<select id="turnoId" name="Turno" data-bind="source: turnosLoja, value: colaboradorSelecionado.ColHfuId" data-text-field="TufDescricao" data-value-field="TufId"></select>
+						</li>
+						<li>
+							<label>
+								Quarta
+							</label>
+							<select id="turnoId" name="Turno" data-bind="source: turnosLoja, value: colaboradorSelecionado.ColHfuId" data-text-field="TufDescricao" data-value-field="TufId"></select>
+						</li>
+						<li>
+							<label>
+								Quinta
+							</label>
+							<select id="turnoId" name="Turno" data-bind="source: turnosLoja, value: colaboradorSelecionado.ColHfuId" data-text-field="TufDescricao" data-value-field="TufId"></select>
+						</li>
+						<li>
+							<label>
+								Sexta
+							</label>
+							<select id="turnoId" name="Turno" data-bind="source: turnosLoja, value: colaboradorSelecionado.ColHfuId" data-text-field="TufDescricao" data-value-field="TufId"></select>
+						</li>
+						<li>
+							<label>
+								Sábado
+							</label>
+							<select id="turnoId" name="Turno" data-bind="source: turnosLoja, value: colaboradorSelecionado.ColHfuId" data-text-field="TufDescricao" data-value-field="TufId"></select>
+						</li>
+					</ul>
+				</li>-->
+				<li>
+					<ul>
+						<li class="subTitulo" style="padding:5px;margin:0;">
+							<a class="divSubTitulo">Novo Telefone</a>
+							<a id="novoTelefone" data-role="detailbutton" class="subTitulo" data-style="rowinsert">&nbsp;</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<ul id="editorTelColaborador" data-bind="source: telefonesColaborador" data-role="listview" data-template="tAtuTelColaborador"></ul>
+				</li>
+			</ul>
+		</div>
+
+		<!--Detalhes Loja View-->
+		<div id="detalhesLoja-view" data-role="view" data-model="viewModel.lojaSelecionada" data-title="TOP LINE PRO" data-layout="update-layout" data-before-show="showLojas">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btnCancel" data-role="button" data-rel="drawer" href="#my-drawer" data-icon="settings" data-align="left"></a>
+					<a class="btnCreate" data-role="button" data-align="right" data-icon="compose" href="#EditorLoja-view" ></a>
+					<span data-role="view-title"></span>
+				</div>
+				<div class="divTituloAtu">LOJA</div>
+			</header>
+			<ul class="infoLoja" data-role="listview" data-type="group">
+				<li>
+					<ul>
+						<li>
+							<div class="divSubTitulo">Dados</div>
+						</li>
+						<li>
+							<label>
+								CNPJ
+							</label><span data-bind="cnpj: LojCnpj"></span>
+						</li>
+						<li>
+							<label>
+								Razão Social
+							</label> <span data-bind="text: LojRazaosocial"></span>
+						</li>
+						<li>
+							<label>
+								Nome Fantasia
+							</label><span data-bind="text: LojNomefantasia"></span>
+						</li>
+						<li>
+							<label>
+								Telefone
+							</label><span data-bind="telefoneText: LojTelefone"></span>
+						</li>
+						<li>
+							<label>
+								Loja de
+							</label><span data-bind="ShopRua: LojShopping_rua"></span>
+						</li>
+						<li>
+							<label>
+								Data Cadastro
+							</label><span id="dtCadastro" data-bind="dateText: LojDtcadastro"></span>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>
+							<div class="divSubTitulo">Endereço</div>
+						</li>
+						<li>
+							<label>
+								Logradouro
+							</label><span data-bind="text: LojLogradouro"></span>
+						</li>
+						<li>
+							<label>
+								Número
+							</label><span data-bind="text: LojNumero"></span>
+						</li>
+						<li>
+							<label>
+								Complemento
+							</label><span data-bind="text: LojComplemento"></span>
+						</li>
+						<li>
+							<label>
+								Bairro
+							</label><span data-bind="text: LojBairro"></span>
+						</li>
+						<li>
+							<label>
+								Cidade
+							</label><span data-bind="text: LojCidade"></span>
+						</li>
+						<li>
+							<label>
+								UF
+							</label> <span data-bind="text: LojUf"></span>
+						</li>
+						<li>
+							<label>
+								CEP
+							</label><span data-bind="cep: LojCep"></span>
+						</li>
+					</ul>
+				</li>
+				<!--	<li>
+				<ul>
+				<li>
+				<div class="divSubTitulo">Coordenadas</div>
+				</li>
+				<li>
+				<label>
+				Latitude
+				</label><span data-bind="text: LojLatitude"></span>
+				</li>
+				<li>
+				<label>
+				Longitude
+				</label> <span data-bind="text: LojLongitude"></span>
+				</li>
+				</ul>
+				</li>-->
+				<li>
+					<ul class="infoLoja" data-bind="source: dsEscala" data-role="listview" data-template="tEscalasLoja"></ul>
+				</li>
+			</ul>
+		</div>
+
+		<!--Editor Loja View-->
+		<div id="EditorLoja-view" data-role="view" data-model="viewModel" data-title="TOP LINE PRO" data-layout="update-layout" data-show="editorLojaViewShow" data-init="editorLojaViewInit">
+			<header data-role="header">
+				<div data-role="navbar">
+					<a id="cancelLoja" class="btnCancel" data-role="backbutton" data-icon="reply" data-align="left"></a>
+					<a id="editorLoja" class="btnCreate" data-role="button" data-icon="save-button" data-align="right"></a>
+					<span data-role="view-title"></span>
+				</div>
+				<div class="divTituloAtu">LOJA</div>
+			</header>
+			<ul class="editorLoja" data-role="listview" data-type="group" >
+				<li>
+					<ul>
+						<li>
+							<div class="divSubTitulo">Dados</div>
+						</li>
+						<li>
+							<label>
+								CNPJ
+							</label>
+							<input id="cnpj" name="Cnpj" type="text" placeholder="CNPJ" maxlength="14" size="14" data-bind="cnpj: lojaSelecionada.LojCnpj, value: lojaSelecionada.LojCnpj" required />
+						</li>
+						<li>
+							<label>
+								Código
+							</label>
+							<input id="LojCodigo" name="Código" type="text" maxlength="10" size="10" placeholder="Código" data-bind="value: lojaSelecionada.LojCodigo" required />
+						</li>
+						<li>
+							<label>
+								Razão Social
+							</label>
+							<input id="LojRazaosocial" name="RazaoSocial" placeholder="Razão Social" type="text" maxlength="60" size="60" data-bind="value: lojaSelecionada.LojRazaosocial" required  />
+						</li>
+						<li>
+							<label>
+								Nome Fantasia
+							</label>
+							<input id="LojNomefantasia" name="NomeFantasia" placeholder="Nome Fantasia" maxlength="50" size="50" type="text" data-bind="value: lojaSelecionada.LojNomefantasia" required  />
+						</li>
+						<li>
+							<label>
+								Telefone
+							</label>
+							<input id="LojTelefone" name="Telefone" type="text" maxlength="11" size="11" data-bind="telefoneValue: lojaSelecionada.LojTelefone" />
+						</li>
+						<li>
+							<label>
+								Loja de
+							</label>
+							<select id="LojShopping_rua" name="TipoLoja" data-bind="source: TLojas, value: lojaSelecionada.LojShopping_rua" data-text-field="Desc" data-value-field="Id"></select>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>
+							<div class="divSubTitulo">Endereço</div>
+						</li>
+						<li>
+							<label>
+								Logradouro
+							</label>
+							<input id="LojLogradouro" name="Logradouro" type="text" maxlength="60" size="60" data-bind="value: lojaSelecionada.LojLogradouro" />
+						</li>
+						<li>
+							<label>
+								Número
+							</label>
+							<input id="LojNumero" name="Nº" type="text" maxlength="10" size="10" data-bind="value: lojaSelecionada.LojNumero" />
+						</li>
+						<li>
+							<label>
+								Complemento
+							</label>
+							<input id="LojComplemento" name="Complemento" maxlength="40" size="40" type="text" data-bind="value: lojaSelecionada.LojComplemento" />
+						</li>
+						<li>
+							<label>
+								Bairro
+							</label>
+							<input id="LojBairro" name="Bairro" type="text" maxlength="50" size="50" data-bind="value: lojaSelecionada.LojBairro" />
+						</li>
+						<li>
+							<label>
+								Cidade
+							</label>
+							<input id="LojCidade" name="Cidade" type="text" maxlength="50" size="50" data-bind="value: lojaSelecionada.LojCidade" />
+						</li>
+						<li>
+							<label>
+								UF
+							</label>
+							<select id="LojUf" name="Uf" data-bind="source: UFs, value: lojaSelecionada.LojUF" data-text-field="Uf" data-value-field="Uf"></select>
+						</li>
+						<li>
+							<label>
+								CEP
+							</label>
+							<input id="LojCep" name="Cep" type="text" maxlength="9" size="9" data-bind="cep: lojaSelecionada.LojCep, value: lojaSelecionada.LojCep" />
+						</li>
+					</ul>
+				</li>
+				<!--			<li>
+				<ul>
+				<li class="subTitulo" style="padding:5px;margin:0;">
+				<a class="subTitulo">Coordenadas</a>
+				<a id="lerCoordenadas" data-role="detailbutton" class="subTitulo" data-icon="globe">&nbsp;</a>
+				</li>
+				<li>
+				<label>
+				Latitude
+				</label>
+				<input id="LojLatitude" name="Latitude" type="text" data-bind="value: lojaSelecionada.LojLatitude" disabled />
+				</li>
+				<li>
+				<label>
+				Longitude
+				</label>
+				<input id="LojLongitude" name="Longitude" type="text" data-bind="value: lojaSelecionada.LojLongitude" disabled />
+				</li>
+				</ul>
+				</li>-->
+				<li>
+					<ul>
+						<li class="subTitulo" style="padding:5px;margin:0;">
+							<a class="subTitulo">Novo Turno</a>
+							<a id="novoTurno" data-role="detailbutton" class="subTitulo" data-style="rowinsert">&nbsp;</a>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<ul id="editorTurnosLoja" data-bind="source: escalas" data-role="listview" data-template="tAtuEscalasLoja"></ul>
+				</li>
+			</ul>
+		</div>
+
+		<!--Validação dispositivo View-->
+		<div data-role="view" id="validacaoDispositivo-view" data-title="TOP LINE PRO" data-model="viewModel" data-init="initValidacao" data-hide="viewHide" data-layout="updade-layout">
+			<header data-role="header">
+				<div data-role="navbar">
+					<span data-role="view-title"></span>
+				</div>
+			</header>
+			<div class="content">
+				<div id="getForm">
+					<h4>Dispositivo não cadastrado</h4>
+					<label>Informe o CNPJ da sua Loja</label><br/>
+					<input class="button" id="iptCnpjInicial"><br/>
+					<button class="button" id="btnPesquisaCnpj">Buscar</button><br/>
+				</div>
+				<!--<div><h4>Clear Local Storage</h4><button class="button" id="clearLocalStorage">Clear</button></div>-->
+			</div>
+		</div>
+
+		<!--Lista de Fechamentos do dia-->
+		<div id="infoFechamento-view" data-role="view" data-title="Fechamento" data-model="viewModelFechamento" data-zoom="true" data-before-show="showFechamentos" data-layout="update-layout" >
+			<header data-role="header">
+				<div data-role="navbar">
+					<a class="btnCancel" data-role="backbutton" href="#dentroFila-view" data-icon="settings" data-align="left"></a>
+					<span data-role="view-title"></span>
+				</div>
+				<div class="divTituloAtu">Apuração Fechamento</div>
+			</header>
+			<ul id="infoFechamento" data-role="listview" data-type="group">
+				<li>
+					<ul>
+						<li>
+							<label>
+								Qtde de Vendas Apuradas
+							</label><span data-bind="text: fechamentoApurado.fecQtApuVenda"></span>
+						</li>
+						<li>
+
+							<label>
+								Qtde de Vendas informadas
+							</label><span data-bind="text: fechamentoApurado.fecQtInfVenda"></span>
+						</li>
+						<li>
+							<label>
+								Diferença
+							</label><span id="divergenciaQtde" data-bind="text: fechamentoApurado.divergenciaQtde"></span>
+						</li>
+						<li>
+							<div class="divSubTitulo"></div>
+						</li>
+						<li>
+							<label>
+								Valor Total Apurado
+							</label><span data-bind="valorFechamento: fechamentoApurado.fecVlApuVenda"></span>
+						</li>
+						<li>
+							<label>
+								Valor Total Informado
+							</label> <span data-bind="valorFechamento: fechamentoApurado.fecVlInfVenda"></span>
+						</li>
+						<li>
+							<label>
+								Diferença
+							</label><span id="divergenciaValor" data-bind="valorFechamento: fechamentoApurado.divergenciaValor"></span>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+
+		<!--Editor Fechamento-->
+		<div id="editorFechamento-view" data-role="view" data-model="viewModelFechamento" data-before-show="editorFecViewShow" data-init="editorFecViewInit" data-title="TOP LINE PRO" data-layout="update-layout" >
+			<header data-role="header">
+				<div data-role="navbar">
+					<a id="cancelFechamento" class="btnCancel" data-role="backbutton" data-icon="reply" data-align="left"></a>
+					<a id="createFechamento" class="btnCreate" data-role="button" data-icon="save-button" data-align="right"></a>
+					<span data-role="view-title"></span>
+				</div>
+				<div class="divTituloAtu">FECHAMENTO</div>
+			</header>
+			<ul id="editorFechamento" data-role="listview" data-type="group">
+				<li>
+					<ul id="spanEditor">
+						<li style="text-align: center;">
+							<span  data-bind="text: lojaSelecionada.LojNomefantasia"></span>
+						</li>
+						<li style="text-align: center;">
+							<span data-bind="date: dataAtual" data-dateformat="dddd, dd MMMM yyyy, hh:mm:ss"></span>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>
+							<div class="divSubTitulo">Parâmetros Fechamento</div>
+						</li>
+						<li>
+							<label>
+								Tipo
+							</label>
+							<select id="tipoId" name="Tipo" data-bind="source: tiposFech, value: fechamentoSelecionado.TipoFechamento" data-text-field="Desc" data-value-field="Id"></select>
+						</li>
+						<li>
+							<label>
+								Turno
+							</label>
+							<select id="turnoId01" name="Turno" data-bind="source: turnos, value: fechamentoSelecionado.HfuId" data-text-field="TufDescricao" data-value-field="TufId"></select>
+						</li>
+					</ul>
+				</li>
+				<li>
+					<ul>
+						<li>
+							<div class="divSubTitulo">Dados Fechamento</div>
+						</li>
+						<li>
+							<label>
+								Qtde. de Vendas
+							</label>
+							<input id="qtdeVendas" name="QtdeVendas" type="number" placeholder="Quantidade de vendas" max="9999" min="1" data-bind="value: fechamentoSelecionado.FecQtInfVenda" required />
+						</li>
+						<li>
+							<label>
+								Valor Total Vendas
+							</label>
+							<input id="vlTotalVendas" name="VlTotalVendas" type="number" placeholder="Valor Total Vendas" max="9999999" min="0.01" step="0.01" data-bind="valor: fechamentoSelecionado.FecVlInfVenda" required  />
+						</li>
+						<li>
+							<label>
+								Estoque Total
+							</label>
+							<input id="estoqueTotal" name="EstoqueTotal" type="number" placeholder="Estoque Total" max="99999" min="1" data-bind="valor: fechamentoSelecionado.FecEstoqueTotal"/>
+						</li>
+						<li>
+							<label>
+								Preço Médio
+							</label>
+							<input id="precoMedio" name="PrecoMedio" type="number" placeholder="Preço Médio"  max="9999999" min="0.01" step="0.01" data-bind="valor: fechamentoSelecionado.FecPrecoMedio"/>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+
+		<!--Menu drawer-->
+		<div data-role="drawer" id="my-drawer" style="width: 270px" data-views="['dentroFila-view', 'foraFila-view', 'detalhesLoja-view', 'colaboradores-view', 'consulta-view', 'topLine.html']">
+			<div class="configTitulo">CONFIGURAÇÕES</div>
+			<ul id="ulMenuConfig" data-role="listview" data-click="menuConsulta">
+				<li id="#dentroFila-view">
+					<img src="styles/images/seta_trans.png" alt="menu" />
+					<div class="menuPrincipal">Fila da Vez</div>
+				</li>
+				<li id="#detalhesLoja-view">
+					<img src="styles/images/seta_trans.png" alt="menu" />
+					<div class="menuPrincipal">Cadastro de Loja</div>
+				</li>
+				<li id="#colaboradores-view">
+					<img src="styles/images/seta_trans.png" alt="menu" />
+					<div class="menuPrincipal">Cadastro de Colaboradores</div>
+				</li>
+			</ul>
+		</div>
+
+		<!--Template Colaborador-->
+		<script type="text/x-kendo-template" id="tColaborador">
+			<div id="#= uid #" data-role="touch" data-enable-swipe="0" data-tap="showDetalhesColaborador">
+				<div id="filaTudo">
+					<img class="fila-art" data-bind="attr: { src: ColFoto}"/>
+					<div class="fila-div">
+						<h1 class="vendedor-nome"> ${ColNome} # # ${ColSobrenome} </h1>
+					</div>
+				</div>
+			</div>
+		</script>
+
+		<!-- Templates -->
+		<script type="text/x-kendo-template" id="tdentroFila">
+			<div id="#= uid #" data-role="touch" data-enable-swipe="1" data-swipe="onSwipe" data-touchstart="onTouchstart" data-tap="atendimentoViewTap">
+				<div id="filaTudo">
+					<img class="fila-art" data-bind="attr: { src: ColFoto}"/>
+					<div class="fila-div">
+						<h1 class="fila-nome" data-bind="text: ColApelido"></h1>
+						<h2 class="fila-turno" data-bind="text: ColTurno"></h2>
+					</div>
+					<div id="filaOrdem">#=FilaLojOrdem#&\#186;</div>
+					<a id="btnSair" data-role="button" class="saida">Sair da Fila</a>
+				</div>
+			</div>
+		</script>
+
+		<script type="text/x-kendo-template" id="tforaFila">
+			<div id="#= uid #" data-role="touch" data-enable-swipe="1" data-swipe="onSwipeFora" data-touchstart="onTouchstartFora">
+				<div id="filaTudo">
+					<img class="fila-art" data-bind="attr: { src: ColFoto}"/>
+					<div class="fila-div">
+						<h1 class="fila-nome" data-bind="text: ColApelido"></h1>
+						<h2 class="fila-turno" data-bind="text: ColTurno"></h2>
+						<a id="btnEntrada" data-role="button" class="entrar">Entrar na Fila</a>
+					</div>
+				</div>
+			</div>
+		</script>
+
+		<script type="text/x-kendo-template" id="tEscalasLoja">
+			<ul class="infoLoja" data-role="listview">
+				<li>
+					<div class="divSubTitulo">#=TufDescricao#</div>
+				</li>
+				<li>
+					<label>
+						Dia
+					</label>
+					<span data-bind="text: DsfDescricao"></span>
+				</li>
+				<li>
+					<label>
+						Período
+					</label>
+					<span>#=EscHrInicial# às #=EscHrFinal#</span>
+				</li>
+			</ul>
+		</script>
+
+		<script type="text/x-kendo-template" id="tAtuEscalasLoja">
+			<ul id="editorTurnosLoja" data-role="listview">
+				<li>
+					<label>
+						Turno
+					</label>
+					<select id="TufId" name="TufId" data-bind="source: turnos, value: TufId" data-text-field="TufDescricao" data-value-field="TufId" required ></select>
+				</li>
+				<li>
+					<label>
+						Dia
+					</label>
+					<select id="DsfId" name="DsfId" data-bind="source: diasSemana, value: DsfId" data-text-field="Descricao" data-value-field="Id" required ></select>
+				</li>
+				<li>
+					<label>
+						Hora Inicial
+					</label>
+					<input id="#= uid #" name="EscHrInicial" type="time" data-bind="value: EscHrInicial" required />
+				</li>
+				<li>
+					<label>
+						Hora Final
+					</label>
+					<input id="#= uid #" name="EscHrFinal" type="time" data-bind="value: EscHrFinal" required />
+				</li>
+			</ul>
+			<div class="divSubTitulo"></div>
+		</script>
+
+		<script type="text/x-kendo-template" id="tTelColaborador">            			
+			<ul class="infoColaborador" data-role="listview">
+				<li>
+					<label>
+						${TteDescricao}
+					</label>
+					<span data-bind="telefoneText: TelNumero"/>
+				</li>
+			</ul>			
+		</script>
+
+		<script type="text/x-kendo-template" id="tColaboradorLoja">            			
+			<div id="#= uid #" data-role="touch" data-enable-swipe="0" data-tap="showColaboradorLoja">
+				<div id="filaTudo">
+					<img class="fila-art" data-bind="attr: { src: ColFoto}"/>
+					<div class="fila-div">
+						<h1 class="vendedor-nome"> ${ColNome} # # ${ColSobrenome} </h1>
+					</div>
+				</div>
+			</div>
+		</script>
+
+		<script type="text/x-kendo-template" id="tTurnosLoja">            			
+			<div id="#= uid #" data-role="touch" data-enable-swipe="0" data-tap="showTurnodaLoja">
+				<img class="imgMenuConsulta" src="styles/images/seta_pequena.png" />
+				<div class="menu">${TufDescricao}</div>
+			</div>
+		</script>
+
+		<script type="text/x-kendo-template" id="tAtuTelColaborador">
+			<div id="#= uid #" data-role="touch" data-enable-swipe="1" data-swipe="onSwipe" data-touchstart="onTouchstartTelefone">
+				<ul id="editorTelColaborador" data-role="listview">
+					<li>
+						<label>
+							Tipo
+						</label>
+						<select id="TteId" class="TteId" name="TteId" data-bind="source: tiposTelefone, value: TteId" data-text-field="Descricao" data-value-field="Id" placeholder="Tipo de Telefone" required ></select>
+					</li>
+					<li>
+						<label>
+							Número
+						</label>
+						<input class="TelefonesColaborador" id="#= uid #" name="Telefone" type="text" placeholder="Telefone" data-bind="value: TelNumero" required />
+					</li>
+				</ul>
+				<button id="btnEntrada" data-role="button" class="excluir" data-icon="delete"></button>
+				<div id="divSubTitulo"></div>
+			</div>
+		</script>
+
+		<script type="text/x-kendo-template" id="tAtuTiposContato"> 
+			<div id="#= uid #" data-role="touch" data-enable-swipe="1" data-swipe="onSwipe" data-touchstart="onTouchstarContato">
+				<li>
+					<label>
+						Qtde
+					</label>
+					<input id="#= uid #" name="Quantidade" type="number" placeholder="Qtd." data-bind="value: FcoQtdCliente" required />
+				</li>
+				<li>
+					<label>
+						Tipo
+					</label>
+					<select id="TcoId" name="TcoId" data-bind="source: tiposContato, value: TcoId" data-text-field="TcoDescricao" data-value-field="TcoId"></select>
+				</li>
+				<button id="btnContato" data-role="button" class="excluir" data-icon="delete"></button>
+				<div id="divSubTitulo"></div>
+			</div>  
+		</script>
+
+		<script type="text/x-kendo-template" id="tDesRealizadoCol">
+			<table id="tabelaTemplate" cellpadding="0" cellspacing="0">
+				<tr>
+					<td data-bind="hora: MetaHora" width="20%" align="center"></td>
+					<td data-bind="valorMonetario: MetaRealizadoVlVenda" width="30%" align="right"></td>
+					<td data-bind="valorMonetario: MetaRealizadoAcumulado" width="30%" align="right"></td>
+					<td data-bind="qtdeConsulta: MetaRealizadoQtPecas" width="20%" align="right"></td>
+				</tr>
+			</table>
+		</script>
+
+		<script type="text/x-kendo-template" id="tProdutividadePadrao">
+			<table id="tabelaTemplate" cellpadding="0" cellspacing="0">
+				<tr>
+					<td data-bind="text: DescricaoMotivo" width="60%" align="center"></td>
+					<td data-bind="qtdeConsulta: Quantidade" width="15%" align="center"></td>
+					<td data-bind="valorPercentual: Percentual" width="25%" align="center"></td>
+				</tr>
+			</table>
+		</script>
+
+		<script type="text/x-kendo-template" id="tMetasDiariasPadrao">
+			<table id="tabelaTemplate" cellpadding="0" cellspacing="0">
+				<tr>
+					<td data-bind="dateText: Dia" width="20%" align="center"></td>
+					<td data-bind="valorMonetario: Previsto" width="25%" align="center"></td>
+					<td data-bind="valorMonetario: Realizado" width="25%" align="center"></td>
+					<td data-bind="valorPercentual: Percentual" width="30%" align="center"></td>
+				</tr>
+			</table>
+		</script>
+
+		<script type="text/javascript">
+			function menuConsulta(e) {
+				app.application.navigate(e.item.context.id);
+			}
+		</script>
+
+	</body>
+</html>
+

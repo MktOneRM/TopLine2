@@ -1,25 +1,32 @@
 (function (global) {
-    var mobileSkin = "",
-        app = global.app = global.app || {},
-        os = kendo.support.mobileOS,
-        statusBarStyle = os.ios && os.flatVersion >= 700 ? "black-translucent" : "black";
+	app = global.app = global.app || {};
 
-    document.addEventListener('deviceready', function () {
-        navigator.splashscreen.hide();
-    }, false);
+	document.addEventListener("deviceready", function () {
+		app.application = new kendo.mobile.Application(document.body, {
+			//transition: "overlay:up reverse",
+			loading: '<h1 class="loading-message">Carregando...</h1>', 
+			skin:"flat"
+		});
+		
+		kendo.mobile.ui.Drawer.current = null;
+		
+		
+	}, false);
+	
+	$(window).resize(function() {
+		var newHeigth = $(document).height() - 120;
+		
+		var charts = $("[id^='chtGraf']");
 
-    app.application = new kendo.mobile.Application(document.body, { layout: "tabstrip-layout", statusBarStyle: statusBarStyle });
-
-    app.changeSkin = function (e) {
-        if (e.sender.element.text() === "Flat") {
-            e.sender.element.text("Native");
-            mobileSkin = "flat";
-        }
-        else {
-            e.sender.element.text("Flat");
-            mobileSkin = "";
-        }
-
-        app.application.skin(mobileSkin);
-    };
-})(window);
+		for (var i = 0; i < charts.length; i = i + 1) {			
+			var id = charts[i].id;
+			
+			var chart = $("#" + id).data("kendoChart"); 
+			if (chart != null) {
+				chart.options.chartArea.height = newHeigth; 
+				chart.refresh(); 
+			}
+		}
+		
+	});
+})(window)
